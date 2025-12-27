@@ -334,6 +334,7 @@ class ErrorHandler(CyCog):
     )
 
     async def cog_load(self) -> None:
+
         if self.bot.webhooks.get('ERROR') is None:
             await self.bot.pool.execute(
                 """
@@ -344,6 +345,7 @@ class ErrorHandler(CyCog):
                 DEFAULT_WEBHOOK,
             )
             await self.bot.refresh_vars()
+        await super().cog_load()
 
     def _cleanse_error_attrs(self, attrs: list[str] | str, *, seperator: str, prefix: str) -> str:
         return (

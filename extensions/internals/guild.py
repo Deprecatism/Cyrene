@@ -63,6 +63,7 @@ def find_base_channel(channels: Sequence[discord.abc.GuildChannel]) -> discord.a
 
 class Guild(CyCog):
     async def cog_load(self) -> None:
+
         if self.bot.webhooks.get('GUILD') is None:
             await self.bot.pool.execute(
                 """
@@ -73,6 +74,7 @@ class Guild(CyCog):
                 DEFAULT_WEBHOOK,
             )
             await self.bot.refresh_vars()
+        await super().cog_load()
 
     @commands.Cog.listener('on_guild_join')
     async def guild_join(self, guild: discord.Guild) -> None:

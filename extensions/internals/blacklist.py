@@ -53,6 +53,7 @@ class Blacklist(CyCog):
                 blacklist_type=entry['blacklist_type'],
             )
 
+        await super().cog_load()
         # Filled cache
 
     @commands.group(

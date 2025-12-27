@@ -51,8 +51,10 @@ async def _callable_prefix(bot: Cyrene, message: discord.Message) -> list[str]:
 
 @click.command()
 @click.option('--production', is_flag=True)
-def run(*, production: bool) -> None:
+@click.option('--maintenance', is_flag=True)
+def run(*, production: bool, maintenance: bool) -> None:
     token = TOKEN if production else TEST_TOKEN
+    maintenance = bool(maintenance)
     with setup_logging():
 
         async def run_bot(token: str) -> None:
@@ -75,6 +77,7 @@ def run(*, production: bool) -> None:
                 allowed_mentions=allowed_mentions,
                 intents=intents,
                 session=session,
+                maintenance=maintenance,
             ) as bot:
                 bot.pool = pool
                 await bot.start(token)

@@ -28,7 +28,9 @@ PACK_LIST_PULL_REGEX = (
     r'`[0-9]\.` \*\*(?P<name>.+)\*\* - ((<:(?P<rarity>[a-zA-Z0-9]+):.+>.+)|(?P<rarity_event>EVENT)) - ID: `(?P<id>[0-9]+)`*'
 )
 
+
 PACK_LIST_PULL_TITLE_REGEX = r"(?i)(.+)'s pack opening.+"
+
 
 RARITY_EMOJIS = {
     1: discord.PartialEmoji(id=1259718293410021446, name='RedStar'),
@@ -37,5 +39,5 @@ RARITY_EMOJIS = {
     4: discord.PartialEmoji(id=1259718164862996573, name='PurpleStar'),
     5: discord.PartialEmoji(id=1259557105220976772, name='RainbowStar'),
     6: discord.PartialEmoji(id=1259689874961862688, name='BlackStar'),
-    7: discord.PartialEmoji(id=1310733539003596832, name='bORGy'),
+    7: discord.PartialEmoji(id=1259689942510997505, name='BlueStar'),
 }
