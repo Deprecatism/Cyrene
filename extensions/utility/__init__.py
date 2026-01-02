@@ -20,7 +20,8 @@ if TYPE_CHECKING:
 
 SHAMIKO_SERVER_ID = 682869291997331466
 SHAMIKO_CHAT_CHANNEL_ID = 705071817081094246
-X_COM_REGEX = '.+//x.com/.+'
+X_COM_MATCH = '.+x.com.+'
+X_COM_REGEX = r'//x.com/'
 X_COM_SUB = '//fxtwitter.com/'
 
 
@@ -101,7 +102,7 @@ class Utility(CyCog, name='Utility'):
         await ctx.send('\n'.join(messages), delete_after=10)
 
     @commands.Cog.listener('message')
-    async def shamiko_fxtwitter(self, message: discord.Message):
+    async def shamiko_fxtwitter(self, message: discord.Message) -> None:
         if not message.guild or message.guild.id != SHAMIKO_SERVER_ID:
             return
 
@@ -111,7 +112,7 @@ class Utility(CyCog, name='Utility'):
         if message.author.bot is True:
             return
 
-        is_x_com_message = re.match(X_COM_REGEX, message.content)
+        is_x_com_message = re.match(X_COM_MATCH, message.content)
 
         if not is_x_com_message:
             return
