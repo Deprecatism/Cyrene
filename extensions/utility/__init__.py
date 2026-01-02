@@ -123,7 +123,14 @@ class Utility(CyCog, name='Utility'):
             await message.delete()
 
         await self.bot.webhooks['SHAMIKO'].send(
-            content=new_content,
+            content=(
+                f'> ### Replying to [{message.reference.resolved.author.display_name}]({message.reference.jump_url})\n'
+                if message.reference
+                and message.reference.resolved
+                and isinstance(message.reference.resolved, discord.Message)
+                else ''
+            )
+            + new_content,
             avatar_url=message.author.display_avatar.url,
             username=message.author.display_name,
         )
