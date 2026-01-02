@@ -101,7 +101,7 @@ class Utility(CyCog, name='Utility'):
 
         await ctx.send('\n'.join(messages), delete_after=10)
 
-    @commands.Cog.listener('message')
+    @commands.Cog.listener('on_message')
     async def shamiko_fxtwitter(self, message: discord.Message) -> None:
         if not message.guild or message.guild.id != SHAMIKO_SERVER_ID:
             return
@@ -114,7 +114,7 @@ class Utility(CyCog, name='Utility'):
 
         is_x_com_message = re.match(X_COM_MATCH, message.content)
 
-        if not is_x_com_message:
+        if is_x_com_message is None:
             return
 
         new_content = re.sub(X_COM_REGEX, X_COM_SUB, message.content)
