@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import contextlib
 import operator
+import re
 from collections import Counter
 from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
 
+from config import DEFAULT_WEBHOOK
 from utilities.bases.bot import Cyrene
 from utilities.bases.cog import CyCog
 
@@ -15,11 +18,31 @@ if TYPE_CHECKING:
     from utilities.bases.context import CyContext
 
 
+SHAMIKO_SERVER_ID = 682869291997331466
+SHAMIKO_CHAT_CHANNEL_ID = 705071817081094246
+X_COM_REGEX = '//x.com/'
+X_COM_SUB = '//fxtwitter.com/'
+
+
 class Utility(CyCog, name='Utility'):
     """Some useful utility commands."""
 
     def __init__(self, bot: Cyrene) -> None:
         super().__init__(bot)
+
+    async def cog_load(self) -> None:
+
+        if self.bot.webhooks.get('SHAMIKO') is None:
+            await self.bot.pool.execute(
+                """
+                    INSERT INTO Webhooks
+                    VALUES ($1, $2);
+                """,
+                'SHAMIKO',
+                DEFAULT_WEBHOOK,
+            )
+            await self.bot.refresh_vars()
+        await super().cog_load()
 
     async def _basic_cleanup_strategy(self, ctx: CyContext, search: int) -> dict[str, int]:
         count = 0
@@ -76,6 +99,33 @@ class Utility(CyCog, name='Utility'):
             messages.extend(f'- **{author}**: {count}' for author, count in spammers)
 
         await ctx.send('\n'.join(messages), delete_after=10)
+
+    @commands.Cog.listener('message')
+    async def shamiko_fxtwitter(self, message: discord.Message):
+        if not message.guild or message.guild.id != SHAMIKO_SERVER_ID:
+            return
+
+        if message.channel.id != SHAMIKO_CHAT_CHANNEL_ID:
+            return
+
+        if message.author.bot is True:
+            return
+
+        is_x_com_message = re.match(X_COM_REGEX, message.content)
+
+        if not is_x_com_message:
+            return
+
+        new_content = re.sub(X_COM_REGEX, X_COM_SUB, message.content)
+
+        with contextlib.suppress(discord.HTTPException):
+            await message.delete()
+
+        await self.bot.webhooks['SHAMIKO'].send(
+            content=new_content,
+            avatar_url=message.author.display_avatar.url,
+            username=message.author.display_name,
+        )
 
 
 async def setup(bot: Cyrene) -> None:
