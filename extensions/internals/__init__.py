@@ -14,9 +14,10 @@ from .blacklist import Blacklist
 from .dev import Developer
 from .error_handler import ErrorHandler
 from .guild import Guild
+from .mc import Minecraft
 
 
-class Internals(Blacklist, Developer, ErrorHandler, Guild, name='Developer'):
+class Internals(Blacklist, Developer, ErrorHandler, Guild, Minecraft, name='Developer'):
     @discord.utils.copy_doc(commands.Cog.cog_check)
     async def cog_check(self, ctx: CyContext) -> bool:
         if await self.bot.is_owner(ctx.author):

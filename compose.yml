@@ -6,6 +6,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - /home/willi/hosting/monifactory/data/logs/:/app/mc_logs
+
     depends_on:
       db:
         condition: service_healthy
@@ -23,7 +26,6 @@ services:
       interval: 1s
       timeout: 5s
       retries: 10
-
 volumes:
   db:
     driver: local
