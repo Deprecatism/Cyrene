@@ -25,6 +25,9 @@ class Minecraft(CyCog):
 
         self.task = self.bot.loop.create_task(self.minecraft_chat_recieve())
 
+    def cog_unload(self) -> None:
+        self.task.cancel()
+
     async def minecraft_chat_recieve(self) -> None:
         proc_coroutine = asyncio.create_subprocess_shell(
             f'tail --lines 0 -F {LOG_PATH}',
