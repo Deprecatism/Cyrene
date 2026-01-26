@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 LOG_PATH = '/app/mc_logs/latest.log'
 MESSAGE_REGEX = r'.+\[Server thread\/INFO\] .+: <(?P<username>.+)> (?P<message>.+)'
 ACHIEVEMENT_REGEX = r'.+\[Server thread\/INFO\] .+: (?P<username>.+) has (.+) \[(?P<advancement>.+)\]'
-CHANNEL_ID = 1395412652494426122
+CHANNEL_ID = 1464932751978270721
 
 
 class Minecraft(CyCog):
