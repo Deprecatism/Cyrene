@@ -13,9 +13,8 @@ if TYPE_CHECKING:
 
     from utilities.bases.bot import Cyrene
 
-LOG_PATH = '/app/mc_logs/latest.log'
-MESSAGE_REGEX = r'.+\[Server thread\/INFO\] .+: <(?P<username>.+)> (?P<message>.+)'
-ACHIEVEMENT_REGEX = r'.+\[Server thread\/INFO\] .+: (?P<username>.+) has (.+) \[(?P<advancement>.+)\]'
+LOG_PATH = '/home/dep/.local/share/PrismLauncher/instances/Monifactory/minecraft/logs/latest.log'
+SERVER_THREAD_REGEX = r'.+\[Server thread\/INFO\] \[net.minecraft.server.MinecraftServer\/\]: (.+)'
 CHANNEL_ID = 1464932751978270721
 
 
@@ -45,19 +44,11 @@ class Minecraft(CyCog):
             await self.mc_message_handler(output.decode())
 
     async def mc_message_handler(self, msg: str) -> None:
-        message_match = re.findall(MESSAGE_REGEX, msg)
+        chat_message = re.findall(SERVER_THREAD_REGEX, msg)
 
-        if message_match:
-            data = message_match[0]
-            self.bot.dispatch('message_dispatch', f'**{data[0]}**: {data[1]}')
-
-            return
-
-        advancement_match = re.findall(ACHIEVEMENT_REGEX, msg)
-
-        if advancement_match:
-            data = advancement_match[0]
-            self.bot.dispatch('message_dispatch', f'**{data[0]}** has {data[1]} [**{data[2]}**]')
+        if chat_message:
+            data = chat_message[0]
+            self.bot.dispatch('message_dispatch', f'{data}')
 
             return
 
