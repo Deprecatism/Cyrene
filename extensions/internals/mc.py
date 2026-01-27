@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     from utilities.bases.bot import Cyrene
 
-LOG_PATH = '/home/dep/.local/share/PrismLauncher/instances/Monifactory/minecraft/logs/latest.log'
+LOG_PATH = '/app/mc_logs/latest.log'
 SERVER_THREAD_REGEX = r'.+\[Server thread\/INFO\] \[net.minecraft.server.MinecraftServer\/\]: (.+)'
 CHANNEL_ID = 1464932751978270721
 
