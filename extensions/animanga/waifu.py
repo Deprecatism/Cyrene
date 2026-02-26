@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 __all__ = ("Waifu",)
 
-TAG_ALLOWED_TYPES = [0, 1, 3, 4]
+TAG_ALLOWED_TYPES = [1, 3, 4]
 
 
 async def get_waifu(
