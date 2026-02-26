@@ -72,7 +72,7 @@ class ServerInfo(CyCog):
                 str(a.mention)
                 for a in sorted(
                     guild.premium_subscribers,
-                    key=lambda m: (m.premium_since or (m.joined_at or m.created_at)),
+                    key=lambda m: m.premium_since or (m.joined_at or m.created_at),
                 )
             ]
 

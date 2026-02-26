@@ -245,8 +245,10 @@ class Blacklist(CyCog):
             ctx.channel
             if ctx
             else discord.utils.find(
-                lambda ch: (ch.guild.system_channel or 'general' in ch.name.lower())  # The channel to choose
-                and ch.permissions_for(guild.me).send_messages is True,  # The check for if we can send message
+                lambda ch: (
+                    (ch.guild.system_channel or 'general' in ch.name.lower())  # The channel to choose
+                    and ch.permissions_for(guild.me).send_messages is True
+                ),  # The check for if we can send message
                 guild.text_channels,
             )
         )
