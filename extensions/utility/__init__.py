@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import contextlib
+import datetime
 import operator
 import re
 from collections import Counter
 from typing import TYPE_CHECKING
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from config import DEFAULT_WEBHOOK
 from utilities.bases.bot import Cyrene
@@ -23,6 +24,10 @@ SHAMIKO_CHAT_CHANNEL_ID = 705071817081094246
 X_COM_MATCH = '.+x.com.+'
 X_COM_REGEX = r'//x.com/'
 X_COM_SUB = '//fxtwitter.com/'
+
+
+SKPORT_REMINDER_ROLE = 1479882079281086495
+SKPORT_REMINDER_CHANNEL = 1479897237638221987
 
 
 class Utility(CyCog, name='Utility'):
@@ -134,6 +139,13 @@ class Utility(CyCog, name='Utility'):
             avatar_url=message.author.display_avatar.url,
             username=message.author.display_name,
         )
+
+    @tasks.loop(time=datetime.time(hour=8, tzinfo=datetime.UTC))
+    async def shamiko_skport_remind(self) -> None:
+        reminder_text = f"""<@&{SKPORT_REMINDER_ROLE}> Me when you forget to do the daily skport login"""
+
+        ch: discord.TextChannel = self.bot.get_channel(SKPORT_REMINDER_CHANNEL)  # pyright: ignore[reportAssignmentType]
+        await ch.send(reminder_text)
 
 
 async def setup(bot: Cyrene) -> None:
