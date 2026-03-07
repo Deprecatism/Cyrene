@@ -48,7 +48,13 @@ class Utility(CyCog, name='Utility'):
                 DEFAULT_WEBHOOK,
             )
             await self.bot.refresh_vars()
+
+        self.shamiko_skport_remind.start()
         await super().cog_load()
+
+    async def cog_unload(self) -> None:
+        self.shamiko_skport_remind.cancel()
+        await super().cog_unload()
 
     async def _basic_cleanup_strategy(self, ctx: CyContext, search: int) -> dict[str, int]:
         count = 0
