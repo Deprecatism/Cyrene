@@ -151,7 +151,7 @@ class Utility(CyCog, name='Utility'):
         reminder_text = f"""<@&{SKPORT_REMINDER_ROLE}> Me when you forget to do the daily skport login"""
 
         ch: discord.TextChannel = self.bot.get_channel(SKPORT_REMINDER_CHANNEL)  # pyright: ignore[reportAssignmentType]
-        await ch.send(reminder_text)
+        await ch.send(reminder_text, allowed_mentions=discord.AllowedMentions.all())
 
 
 async def setup(bot: Cyrene) -> None:
