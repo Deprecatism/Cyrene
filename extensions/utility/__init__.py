@@ -146,7 +146,7 @@ class Utility(CyCog, name='Utility'):
             username=message.author.display_name,
         )
 
-    @tasks.loop(time=datetime.time(hour=8, tzinfo=datetime.UTC))
+    @tasks.loop(time=datetime.time(hour=16, tzinfo=datetime.UTC))
     async def shamiko_skport_remind(self) -> None:
         reminder_text = f"""<@&{SKPORT_REMINDER_ROLE}> Me when you forget to do the daily skport login"""
 
