@@ -21,10 +21,9 @@ if TYPE_CHECKING:
 
 SHAMIKO_SERVER_ID = 682869291997331466
 SHAMIKO_CHAT_CHANNEL_ID = 705071817081094246
-X_COM_MATCH = '.+x.com.+'
-X_COM_REGEX = r'//x.com/'
-X_COM_SUB = '//fxtwitter.com/'
 
+FXTWITTER_MATCH = r'https?:\/\/(?:x|twitter)\.com\/(\w+)\/status\/(\d+)(?:\S+)?'
+FXTWITTER_REPLACE = r'https://fxtwitter.com/\g<1>/status/\g<2>'
 
 SKPORT_REMINDER_ROLE = 1479873899159093420
 SKPORT_REMINDER_CHANNEL = 1479897237638221987
@@ -123,25 +122,23 @@ class Utility(CyCog, name='Utility'):
         if message.author.bot is True:
             return
 
-        is_x_com_message = re.match(X_COM_MATCH, message.content)
+        fxtwit_str = re.sub(FXTWITTER_MATCH, FXTWITTER_REPLACE, message.content)
 
-        if is_x_com_message is None:
+        if fxtwit_str == message.content:
             return
-
-        new_content = re.sub(X_COM_REGEX, X_COM_SUB, message.content)
 
         with contextlib.suppress(discord.HTTPException):
             await message.delete()
 
         await self.bot.webhooks['SHAMIKO'].send(
             content=(
-                f'> ### Replying to [{message.reference.resolved.author.display_name}]({message.reference.jump_url})\n'
+                f'> {message.reference.resolved.author.mention} {message.reference.jump_url}\n'
                 if message.reference
                 and message.reference.resolved
                 and isinstance(message.reference.resolved, discord.Message)
                 else ''
             )
-            + new_content,
+            + fxtwit_str,
             avatar_url=message.author.display_avatar.url,
             username=message.author.display_name,
         )
