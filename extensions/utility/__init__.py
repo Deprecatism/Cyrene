@@ -22,8 +22,8 @@ if TYPE_CHECKING:
 SHAMIKO_SERVER_ID = 682869291997331466
 SHAMIKO_CHAT_CHANNEL_ID = 705071817081094246
 
-FXTWITTER_MATCH = r'https?:\/\/(?:x|twitter)\.com\/(\w+)\/status\/(\d+)(?:\S+)?'
-FXTWITTER_REPLACE = r'https://fxtwitter.com/\g<1>/status/\g<2>'
+FXTWITTER_MATCH = r'https?:\/\/(?:x|twitter)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?'
+FXTWITTER_REPLACE = r'https://fxtwitter.com/status/\g<1>'
 
 SKPORT_REMINDER_ROLE = 1479873899159093420
 SKPORT_REMINDER_CHANNEL = 1479897237638221987
