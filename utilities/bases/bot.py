@@ -204,7 +204,7 @@ class Cyrene(commands.AutoShardedBot):
 
     async def refresh_vars(self) -> None:
         """Set values to some bot constants."""
-        self._support_invite = await self.fetch_invite('https://discord.gg/SaefBj273K')
+        self._support_invite = await self.fetch_invite('https://discord.gg/yaH2ND8jYB')
 
         self.appinfo = await self.application_info()
 
