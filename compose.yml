@@ -9,7 +9,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    network_mode: service:tailscale
   db:
     image: postgres:14.13-alpine
     restart: unless-stopped
