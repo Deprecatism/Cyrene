@@ -36,7 +36,7 @@ class Utility(CyCog, name='Utility'):
             FROM
                     FeatureOptIns
             WHERE
-                    feature = $ 1;
+                    feature = $1;
             """,
             FeatureType.FXTWITTER,
         )
