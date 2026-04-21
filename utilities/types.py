@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import enum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -31,3 +32,7 @@ class WaifuFavouriteEntry:
     user_id: discord.User
     nsfw: bool
     tm: datetime
+
+
+class FeatureType(enum.IntEnum):
+    FXTWITTER = 1

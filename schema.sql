@@ -66,4 +66,10 @@ CREATE TABLE IF NOT EXISTS WaifuAPIEntries (
         nsfw BOOLEAN NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS FeatureOptIns (
+        user_id BIGINT NOT NULL,
+        feature INTEGER NOT NULL,
+        preference JSONB,
+);
+
 COMMIT;

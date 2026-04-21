@@ -1,59 +1,47 @@
 from __future__ import annotations
 
 import contextlib
-import datetime
 import operator
 import re
 from collections import Counter
 from typing import TYPE_CHECKING
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
-from config import DEFAULT_WEBHOOK
 from utilities.bases.bot import Cyrene
 from utilities.bases.cog import CyCog
+from utilities.types import FeatureType
 
 if TYPE_CHECKING:
     from utilities.bases.bot import Cyrene
     from utilities.bases.context import CyContext
 
-
-SHAMIKO_SERVER_ID = 682869291997331466
-SHAMIKO_CHAT_CHANNEL_ID = 705071817081094246
-
 FXTWITTER_MATCH = r'https?:\/\/(?:x|twitter|cunnyx)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?'
 FXTWITTER_REPLACE = r'https://fxtwitter.com/status/\g<1>'
-
-SKPORT_REMINDER_ROLE = 1479873899159093420
-SKPORT_REMINDER_CHANNEL = 1479897237638221987
 
 
 class Utility(CyCog, name='Utility'):
     """Some useful utility commands."""
 
     def __init__(self, bot: Cyrene) -> None:
+        self.fxtwitter_optin: list[int] = []
         super().__init__(bot)
 
     async def cog_load(self) -> None:
-
-        if self.bot.webhooks.get('SHAMIKO') is None:
-            await self.bot.pool.execute(
-                """
-                    INSERT INTO Webhooks
-                    VALUES ($1, $2);
-                """,
-                'SHAMIKO',
-                DEFAULT_WEBHOOK,
-            )
-            await self.bot.refresh_vars()
-
-        self.shamiko_skport_remind.start()
+        data = await self.bot.pool.fetch(
+            """
+            SELECT
+                    user_id
+            FROM
+                    FeatureOptIns
+            WHERE
+                    feature = $ 1;
+            """,
+            FeatureType.FXTWITTER,
+        )
+        self.fxtwitter_optin = [_[0] for _ in data]
         await super().cog_load()
-
-    async def cog_unload(self) -> None:
-        self.shamiko_skport_remind.cancel()
-        await super().cog_unload()
 
     async def _basic_cleanup_strategy(self, ctx: CyContext, search: int) -> dict[str, int]:
         count = 0
@@ -112,14 +100,8 @@ class Utility(CyCog, name='Utility'):
         await ctx.send('\n'.join(messages), delete_after=10)
 
     @commands.Cog.listener('on_message')
-    async def shamiko_fxtwitter(self, message: discord.Message) -> None:
-        if not message.guild or message.guild.id != SHAMIKO_SERVER_ID:
-            return
-
-        if message.channel.id != SHAMIKO_CHAT_CHANNEL_ID:
-            return
-
-        if message.author.bot is True:
+    async def fxtwitter(self, message: discord.Message) -> None:
+        if message.author.id not in self.fxtwitter_optin:
             return
 
         fxtwit_str = re.sub(FXTWITTER_MATCH, FXTWITTER_REPLACE, message.content)
@@ -130,25 +112,7 @@ class Utility(CyCog, name='Utility'):
         with contextlib.suppress(discord.HTTPException):
             await message.delete()
 
-        await self.bot.webhooks['SHAMIKO'].send(
-            content=(
-                f'> {message.reference.resolved.author.mention} {message.reference.jump_url}\n'
-                if message.reference
-                and message.reference.resolved
-                and isinstance(message.reference.resolved, discord.Message)
-                else ''
-            )
-            + fxtwit_str,
-            avatar_url=message.author.display_avatar.url,
-            username=message.author.display_name,
-        )
-
-    @tasks.loop(time=datetime.time(hour=16, tzinfo=datetime.UTC))
-    async def shamiko_skport_remind(self) -> None:
-        reminder_text = f"""<@&{SKPORT_REMINDER_ROLE}> Me when you forget to do the daily skport login"""
-
-        ch: discord.TextChannel = self.bot.get_channel(SKPORT_REMINDER_CHANNEL)  # pyright: ignore[reportAssignmentType]
-        await ch.send(reminder_text, allowed_mentions=discord.AllowedMentions.all())
+        await message.reply(content=fxtwit_str)
 
 
 async def setup(bot: Cyrene) -> None:
