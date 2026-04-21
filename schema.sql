@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS WaifuAPIEntries (
 CREATE TABLE IF NOT EXISTS FeatureOptIns (
         user_id BIGINT NOT NULL,
         feature INTEGER NOT NULL,
-        preference JSONB,
+        preference JSONB
 );
 
 COMMIT;
