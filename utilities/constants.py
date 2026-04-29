@@ -19,14 +19,9 @@ CHAR_LIMIT = 2000
 
 
 class BotEmojis:
-    GREY_TICK = discord.PartialEmoji(name='greyTick', id=1431312403085267066)
-    GREEN_TICK = discord.PartialEmoji(name='greenTick', id=1431312422613815346)
-    RED_CROSS = discord.PartialEmoji(name='redTick', id=1431312495402025010)
+    GREY_TICK = discord.PartialEmoji(name='greyTick', id=1499153371830026330)
+    GREEN_TICK = discord.PartialEmoji(name='greenTick', id=1499153286786322463)
+    RED_CROSS = discord.PartialEmoji(name='redTick', id=1499153450842198096)
 
-    PASS = discord.PartialEmoji(name='pass', id=1431313574550179944)
-    SMASH = discord.PartialEmoji(name='smash', id=1431313312682999878)
-
-    ON_SWITCH = discord.PartialEmoji(name='switch_on', id=1431313973365571656)
-    OFF_SWITCH = discord.PartialEmoji(name='switch_off', id=1431313986904785061)
-
-    CYRENE1 = discord.PartialEmoji(name='Cyrene1', id=1431550613413560440)
+    PASS = discord.PartialEmoji(name='pass', id=1499154823927562390)
+    SMASH = discord.PartialEmoji(name='smash', id=1499154775860838471)
