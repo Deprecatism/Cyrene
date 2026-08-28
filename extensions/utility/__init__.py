@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from utilities.bases.context import CyContext
 
 FIXUP_REPLACE = {
-    r'https?:\/\/(?:x|twitter)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?': r'https://fxtwitter.com/status/\g<1>',
+    r'https?:\/\/(?:x|twitter|cunnyx)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?': r'https://fixupx.com/status/\g<1>',
     r'https?:\/\/open\.(?:spotify)\.com\/track\/(\S+)?': r'https://fxspotify.com/track/\g<1>',
 }
 
@@ -122,19 +122,15 @@ class Utility(CyCog, name='Utility'):
 
         content = message.content
 
+        fixups: list[str] = []
         for match_regex, substitution_regex in FIXUP_REPLACE.items():
-            if re.match(match_regex, content):
-                content = re.sub(match_regex, substitution_regex, content)
+            if (matches := re.finditer(match_regex, content)) and matches:
+                fixups.extend(
+                    re.sub(match_regex, substitution_regex, content[match.start() : match.end()]) for match in matches
+                )
 
-        if content == message.content:
-            return
-
-        with contextlib.suppress(discord.HTTPException):
-            await message.delete()
-            await message.reply(content)
-            return
-
-        await message.channel.send(content=content)
+        if fixups:
+            await message.channel.send(content='\n'.join(fixups))
 
 
 async def setup(bot: Cyrene) -> None:
