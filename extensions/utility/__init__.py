@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 import operator
 import re
 from collections import Counter
@@ -19,8 +18,8 @@ if TYPE_CHECKING:
     from utilities.bases.context import CyContext
 
 FIXUP_REPLACE = {
-    r'https?:\/\/(?:x|twitter|cunnyx)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?': r'https://fixupx.com/status/\g<1>',
-    r'https?:\/\/open\.(?:spotify)\.com\/track\/(\S+)?': r'https://fxspotify.com/track/\g<1>',
+    r'https?:\/\/(?:x|twitter|cunnyx)\.com\/(?:\w+)\/status\/(\d+)': r'https://fixupx.com/status/\g<1>',
+    r'https?:\/\/open\.(?:spotify)\.com\/track\/([a-zA-Z0-9]+)': r'https://fxspotify.com/track/\g<1>',
 }
 
 
