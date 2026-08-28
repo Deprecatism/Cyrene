@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import enum
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -35,4 +35,11 @@ class WaifuFavouriteEntry:
 
 
 class FeatureType(enum.IntEnum):
-    FXTWITTER = 1
+    FIXUP_CONTENT = 1
+
+
+@dataclass
+class FeatureConfig:
+    user: int
+    feature: FeatureType
+    preferences: dict[Any, Any]

@@ -7,40 +7,30 @@ from collections import Counter
 from typing import TYPE_CHECKING
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 
-from utilities.bases.bot import Cyrene
 from utilities.bases.cog import CyCog
+from utilities.functions import format_var_name
 from utilities.types import FeatureType
 
 if TYPE_CHECKING:
     from utilities.bases.bot import Cyrene
     from utilities.bases.context import CyContext
 
-FXTWITTER_MATCH = r'https?:\/\/(?:x|twitter|cunnyx)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?'
-FXTWITTER_REPLACE = r'https://fxtwitter.com/status/\g<1>'
+FIXUP_REPLACE = {
+    r'https?:\/\/(?:x|twitter)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?': r'https://fxtwitter.com/status/\g<1>',
+    r'https?:\/\/open\.(?:spotify)\.com\/track\/(\S+)?': r'https://fxspotify.com/\g<1>',
+}
 
 
 class Utility(CyCog, name='Utility'):
     """Some useful utility commands."""
 
     def __init__(self, bot: Cyrene) -> None:
-        self.fxtwitter_optin: list[int] = []
         super().__init__(bot)
 
     async def cog_load(self) -> None:
-        data = await self.bot.pool.fetch(
-            """
-            SELECT
-                    user_id
-            FROM
-                    FeatureOptIns
-            WHERE
-                    feature = $1;
-            """,
-            FeatureType.FXTWITTER,
-        )
-        self.fxtwitter_optin = [_[0] for _ in data]
         await super().cog_load()
 
     async def _basic_cleanup_strategy(self, ctx: CyContext, search: int) -> dict[str, int]:
@@ -99,20 +89,44 @@ class Utility(CyCog, name='Utility'):
 
         await ctx.send('\n'.join(messages), delete_after=10)
 
+    @commands.hybrid_command(name='optin', description='Optin for features which are disabled by default.')
+    @app_commands.choices(
+        feature=[app_commands.Choice(name=feature_enum.name, value=feature_enum.value) for feature_enum in FeatureType]
+    )
+    async def optin_command(self, ctx: CyContext, feature: FeatureType) -> discord.Message:
+        if feature not in FeatureType:
+            return await ctx.reply("This feature doesn't fucking exist.")
+
+        if feat := next(
+            config for config in self.bot.feature_optins if config.feature == feature and config.user == ctx.author.id
+        ):
+            await self.bot.pool.execute(
+                'DELETE FROM FeatureOptins WHERE user_id = $1 AND feature = $2',
+                ctx.author.id,
+                feature.value,
+            )
+            await self.bot.refresh_vars()
+            return await ctx.reply(f'You have opted out from {format_var_name(feat.feature.name)}')
+
+        await self.bot.pool.execute('INSERT INTO FeatureOptins (user_id, feature) VALUES ($1, $2)')
+        await self.bot.refresh_vars()
+        return await ctx.reply(f'You have opted in for {format_var_name(feat.feature.name)}')
+
     @commands.Cog.listener('on_message')
-    async def fxtwitter(self, message: discord.Message) -> None:
-        if message.author.id not in self.fxtwitter_optin:
+    async def fixup_content(self, message: discord.Message) -> None:
+        if not (_ for _ in self.bot.feature_optins if _.feature == FeatureType.FIXUP_CONTENT and _.user == message.author):
             return
 
-        fxtwit_str = re.sub(FXTWITTER_MATCH, FXTWITTER_REPLACE, message.content)
+        content = message.content
 
-        if fxtwit_str == message.content:
-            return
+        for match_regex, substitution_regex in FIXUP_REPLACE.items():
+            if re.match(match_regex, content):
+                content = re.sub(match_regex, substitution_regex, content)
 
         with contextlib.suppress(discord.HTTPException):
             await message.delete()
 
-        await message.reply(content=fxtwit_str)
+        await message.reply(content=content)
 
 
 async def setup(bot: Cyrene) -> None:

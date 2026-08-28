@@ -10,6 +10,8 @@ import jishaku
 import mystbin
 from discord.ext import commands
 
+from utilities.types import FeatureConfig
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -62,6 +64,7 @@ class Cyrene(commands.AutoShardedBot):
         self.prefixes: dict[int, list[str]] = {}
         self.blacklists: dict[int, BlacklistData] = {}
         self.webhooks: dict[str, discord.Webhook] = {}
+        self.feature_optins: list[FeatureConfig] = []
 
         self.session = session
         self.mystbin = mystbin.Client(session=self.session)
@@ -211,10 +214,25 @@ class Cyrene(commands.AutoShardedBot):
         webhooks = await self.pool.fetch("""SELECT * FROM Webhooks""")
         self.webhooks = {entry[0]: discord.Webhook.from_url(entry[1], session=self.session) for entry in webhooks}
 
+        feature_optins = await self.pool.fetch("""
+            SELECT
+                user_id, feature, preferences
+            FROM
+                FeatureOptIns;
+            """)
+        self.feature_optins = [
+            FeatureConfig(
+                user=entry['user_id'],
+                feature=entry['feature'],
+                preferences=entry['preferences'],
+            )
+            for entry in feature_optins
+        ]
+
     @property
     def owner(self) -> discord.TeamMember | discord.User:
         """
-        Return the user object of the owner of the bot.
+        The user object of the owner of the bot.
 
         Returns
         -------
@@ -227,7 +245,7 @@ class Cyrene(commands.AutoShardedBot):
     @property
     def support_invite(self) -> discord.Invite:
         """
-        Return invite to the support server.
+        The invite to the support server.
 
         Returns
         -------
