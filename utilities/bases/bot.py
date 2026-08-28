@@ -216,7 +216,7 @@ class Cyrene(commands.AutoShardedBot):
 
         feature_optins = await self.pool.fetch("""
             SELECT
-                user_id, feature, preferences
+                user_id, feature, preference
             FROM
                 FeatureOptIns;
             """)
@@ -224,7 +224,7 @@ class Cyrene(commands.AutoShardedBot):
             FeatureConfig(
                 user=entry['user_id'],
                 feature=entry['feature'],
-                preferences=entry['preferences'],
+                preferences=entry['preference'],
             )
             for entry in feature_optins
         ]
