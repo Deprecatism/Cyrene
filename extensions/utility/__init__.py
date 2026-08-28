@@ -115,9 +115,9 @@ class Utility(CyCog, name='Utility'):
 
     @commands.Cog.listener('on_message')
     async def fixup_content(self, message: discord.Message) -> None:
-        if not (
+        if not [
             _ for _ in self.bot.feature_optins if _.feature == FeatureType.FIXUP_CONTENT and _.user == message.author.id
-        ):
+        ]:
             return
 
         content = message.content
