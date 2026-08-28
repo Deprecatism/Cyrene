@@ -10,7 +10,7 @@ import jishaku
 import mystbin
 from discord.ext import commands
 
-from utilities.types import FeatureConfig
+from utilities.types import FeatureConfig, FeatureType
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -223,7 +223,7 @@ class Cyrene(commands.AutoShardedBot):
         self.feature_optins = [
             FeatureConfig(
                 user=entry['user_id'],
-                feature=entry['feature'],
+                feature=FeatureType(entry['feature']),
                 preferences=entry['preference'],
             )
             for entry in feature_optins

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 FIXUP_REPLACE = {
     r'https?:\/\/(?:x|twitter)\.com\/(?:\w+)\/status\/(\d+)(?:\S+)?': r'https://fxtwitter.com/status/\g<1>',
-    r'https?:\/\/open\.(?:spotify)\.com\/track\/(\S+)?': r'https://fxspotify.com/\g<1>',
+    r'https?:\/\/open\.(?:spotify)\.com\/track\/(\S+)?': r'https://fxspotify.com/track/\g<1>',
 }
 
 
@@ -93,24 +93,25 @@ class Utility(CyCog, name='Utility'):
     @app_commands.choices(
         feature=[app_commands.Choice(name=feature_enum.name, value=feature_enum.value) for feature_enum in FeatureType]
     )
-    async def optin_command(self, ctx: CyContext, feature: FeatureType) -> discord.Message:
+    async def optin_command(self, ctx: CyContext, feature: int) -> discord.Message:
         if feature not in FeatureType:
             return await ctx.reply("This feature doesn't fucking exist.")
 
-        if feat := next(
-            config for config in self.bot.feature_optins if config.feature == feature and config.user == ctx.author.id
-        ):
+        optins = (config for config in self.bot.feature_optins if config.feature == feature)
+
+        if (is_opted := [_ for _ in optins if _.user == ctx.author.id]) and is_opted:
+            feat = is_opted[0]
             await self.bot.pool.execute(
                 'DELETE FROM FeatureOptins WHERE user_id = $1 AND feature = $2',
                 ctx.author.id,
-                feature.value,
+                feature,
             )
             await self.bot.refresh_vars()
             return await ctx.reply(f'You have opted out from {format_var_name(feat.feature.name)}')
 
-        await self.bot.pool.execute('INSERT INTO FeatureOptins (user_id, feature) VALUES ($1, $2)')
+        await self.bot.pool.execute('INSERT INTO FeatureOptins (user_id, feature) VALUES ($1, $2)', ctx.author.id, feature)
         await self.bot.refresh_vars()
-        return await ctx.reply(f'You have opted in for {format_var_name(feat.feature.name)}')
+        return await ctx.reply(f'You have opted in for {format_var_name(FeatureType(feature).name)}')
 
     @commands.Cog.listener('on_message')
     async def fixup_content(self, message: discord.Message) -> None:
@@ -123,10 +124,15 @@ class Utility(CyCog, name='Utility'):
             if re.match(match_regex, content):
                 content = re.sub(match_regex, substitution_regex, content)
 
+        if content == message.content:
+            return
+
         with contextlib.suppress(discord.HTTPException):
             await message.delete()
+            await message.reply(content)
+            return
 
-        await message.reply(content=content)
+        await message.channel.send(content=content)
 
 
 async def setup(bot: Cyrene) -> None:
