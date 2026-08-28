@@ -50,10 +50,10 @@ class ServerInfo(CyCog):
                     (
                         fmt_str(
                             [
-                                f'- **Roles: ** {", ".join(valid_roles) if len(valid_roles) <= base_show_count else ", ".join(valid_roles[:3]) + f" + {len(valid_roles) - base_show_count} roles"}'  # noqa: E501
+                                f'- **Roles: ** {", ".join(valid_roles) if len(valid_roles) <= base_show_count else ", ".join(valid_roles[:3]) + f" + {len(valid_roles) - base_show_count} roles"}'  # ruff: ignore[line-too-long]
                                 if guild.roles
                                 else None,
-                                f'- **Emojis: ** {" ".join(emojis) if len(emojis) <= base_show_count else " ".join(emojis[:3]) + f" + {len(emojis) - 3} emojis"} (`{len(guild.emojis)}/{guild.emoji_limit}`)'  # noqa: E501
+                                f'- **Emojis: ** {" ".join(emojis) if len(emojis) <= base_show_count else " ".join(emojis[:3]) + f" + {len(emojis) - 3} emojis"} (`{len(guild.emojis)}/{guild.emoji_limit}`)'  # ruff: ignore[line-too-long]
                                 if guild.emojis
                                 else None,
                             ],
@@ -80,14 +80,14 @@ class ServerInfo(CyCog):
                 name='Nitro Boosts',
                 value=fmt_str(
                     [
-                        f'> **{guild.name}** has `{guild.premium_subscription_count}` boosts and is at **Level `{guild.premium_tier}`**',  # noqa: E501
+                        f'> **{guild.name}** has `{guild.premium_subscription_count}` boosts and is at **Level `{guild.premium_tier}`**',  # ruff: ignore[line-too-long]
                         (
                             f'- **Booster Role: ** {guild.premium_subscriber_role.mention}'
                             if guild.premium_subscriber_role
                             else None
                         ),
                         (
-                            f'- **Boosters: ** {", ".join(boosters) if len(boosters) <= base_show_count else ", ".join(boosters[:3]) + f" + {len(boosters) - base_show_count} boosters"}'  # noqa: E501
+                            f'- **Boosters: ** {", ".join(boosters) if len(boosters) <= base_show_count else ", ".join(boosters[:3]) + f" + {len(boosters) - base_show_count} boosters"}'  # ruff: ignore[line-too-long]
                             if valid_roles
                             else None
                         ),

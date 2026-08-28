@@ -192,4 +192,4 @@ class Paginator(BaseView):
     async def go_to_last_page(self, interaction: discord.Interaction, _: discord.ui.Button[Self]) -> None:
         """Go to the last page."""
         # The call here is safe because it's guarded by skip_if
-        await self.show_page(interaction, self.source.get_max_pages() - 1)  # type: ignore  # noqa: PGH003
+        await self.show_page(interaction, self.source.get_max_pages() - 1)  # type: ignore  # ruff: ignore[blanket-type-ignore]

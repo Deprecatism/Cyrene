@@ -9,7 +9,7 @@ from discord.ext import commands
 if TYPE_CHECKING:
     from asyncpg import Pool, Record
 
-    from utilities.bases.bot import Cyrene  # noqa: F401
+    from utilities.bases.bot import Cyrene  # ruff: ignore[unused-import]
 
 
 class CyContext(commands.Context['Cyrene']):
@@ -41,7 +41,7 @@ class CyContext(commands.Context['Cyrene']):
     @property
     def pool(self) -> Pool[Record]:
         """
-        Return the asyncpg Pool used in the bot.
+        The asyncpg Pool used in the bot.
 
         This can be considered an alias to bot.pool
 

@@ -50,6 +50,10 @@ def format_tb(error: Exception) -> str:
     return ''.join(traceback.format_exception(type(error), error, error.__traceback__))
 
 
+def format_var_name(t: str) -> str:
+    return t.replace('_', ' ').title()
+
+
 def get_command_signature(ctx: CyContext, command: commands.Command[Any, ..., Any], /) -> str:
     """
     Retrieve the signature portion of the help page.

@@ -86,7 +86,7 @@ class TimerManager:
         super().__init__()
 
     async def dispatch_timers(self) -> None:
-        try:
+        try:  # ruff: ignore[too-many-statements-in-try-clause]
             while not self.bot.is_closed():
                 data = await self.wait_for_active_timer()
 

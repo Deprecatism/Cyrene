@@ -35,7 +35,7 @@ async def create_bot_pool() -> asyncpg.Pool[asyncpg.Record]:
         msg = 'Failed to create a pool.'
         raise RuntimeError(msg)
 
-    with Path('schema.sql').open(encoding='utf-8') as file:  # noqa: ASYNC230
+    with Path('schema.sql').open(encoding='utf-8') as file:  # ruff: ignore[blocking-open-call-in-async-function]
         await pool.execute(file.read())
 
     return pool
