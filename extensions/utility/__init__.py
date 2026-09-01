@@ -22,6 +22,8 @@ FIXUP_REPLACE = {
     r'https?:\/\/open\.(?:spotify)\.com\/track\/([a-zA-Z0-9]+)': r'https://fxspotify.com/track/\g<1>',
 }
 
+FIXUP_EMOJI = '\U0001f527'
+
 
 class Utility(CyCog, name='Utility'):
     """Some useful utility commands."""
@@ -112,12 +114,15 @@ class Utility(CyCog, name='Utility'):
         await self.bot.refresh_vars()
         return await ctx.reply(f'You have opted in for {format_var_name(FeatureType(feature).name)}')
 
-    @commands.Cog.listener('on_message')
-    async def fixup_content(self, message: discord.Message) -> None:
-        if not [
-            _ for _ in self.bot.feature_optins if _.feature == FeatureType.FIXUP_CONTENT and _.user == message.author.id
-        ]:
+    @commands.Cog.listener('on_reaction_add')
+    async def fixup_content(self, reaction: discord.Reaction, user: discord.User) -> None:
+        if not [_ for _ in self.bot.feature_optins if _.feature == FeatureType.FIXUP_CONTENT and _.user == user.id]:
             return
+
+        if reaction.emoji != FIXUP_EMOJI:
+            return
+
+        message = reaction.message
 
         content = message.content
 
