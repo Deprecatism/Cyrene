@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 FIXUP_REPLACE = {
     r'https?:\/\/(?:x|twitter|cunnyx)\.com\/(?:\w+)\/status\/(\d+)': r'https://fixupx.com/status/\g<1>',
     r'https?:\/\/open\.(?:spotify)\.com\/track\/([a-zA-Z0-9]+)': r'https://fxspotify.com/track/\g<1>',
+    r'https?:\/\/(?:www\.)?(?:instagram)\.com\/(?:(?!(?:p|reels?)\/)\S+\/)?(p|reels?)\/(\S+)(?:\??\S+)?': r'https://oginstagram.com/\g<1>/\g<2>',
 }
 
 FIXUP_EMOJI = '\U0001f527'
