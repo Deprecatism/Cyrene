@@ -3,8 +3,6 @@ services:
         container_name: "Cyrene"
         build:
             context: .
-        volumes:
-            - .:/app
         restart: unless-stopped
         env_file:
             - .env
